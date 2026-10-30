@@ -210,10 +210,24 @@ No dependency manifest yet — create `requirements.txt` (pinned) with the first
   `Consumer_Key`, `ConsumerSecret_Key`.
 - Parent data path (read-only): `../data/ohlcv_*.parquet`.
 
+## Institution and report format
+
+- International University – VNU-HCM, School of Computer Science and Engineering, Bachelor of
+  Data Science (student ID prefix `ITDSIU`). Thesis is written in **English**.
+- Both LaTeX and Word are accepted (past theses: Phan Manh Son 2025 = LaTeX/pdfTeX; Pham Dong Quan
+  2025 = Word). Front matter used by both: cover (VNU-HCM / IU / SCSE, title, name + ID,
+  supervisor, "A thesis submitted to the School of Computer Science and Engineering in partial
+  fulfillment of the requirements for the degree of Bachelor of Data Science"), committee approval
+  page, acknowledgements, TOC, lists of tables/figures/abbreviations, abstract.
+- Typical chapters: Introduction → Related Work/Literature Review → Methodology → Implementation /
+  Experiments & Results → Discussion & Future Work → Conclusion → References. ~55–80 pages.
+- Bar to clear vs past IU trading theses: they used free/US data or vnstock, a single train/test
+  split, **no transaction costs**, and no VN market mechanics. This thesis's differentiators are
+  exactly those: VN costs + constraints, walk-forward, DSR/PBO, labeled ground truth, two engines.
+
 ## Open Questions
 
-See `docs/00-scope-synthesis.md` §12 — university / report template, report language, whether MT5 is
-mandatory, intraday or not, second annotator.
+See `docs/00-scope-synthesis.md` §12 — whether MT5 is mandatory, intraday or not, second annotator.
 
 ## Scan Metadata
 

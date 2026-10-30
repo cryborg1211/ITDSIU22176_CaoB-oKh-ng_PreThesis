@@ -46,7 +46,10 @@
 \documentkind{thesis}
 
 % ---- cover -------------------------------------------------------------------
+% The titlepage resets the page counter, so cover and approval page would both be "i" and
+% hyperref would emit a duplicate page anchor: the cover gets no anchor.
 \newcommand{\makecover}{%
+  \hypersetup{pageanchor=false}%
   \begin{titlepage}
     \centering
     {\large\bfseries VIETNAM NATIONAL UNIVERSITY OF HO CHI MINH CITY\\[2pt]
@@ -66,7 +69,8 @@
      \@degree\par}
     \vspace{1cm}
     {\normalsize Ho Chi Minh City, Vietnam\\ \@submissiondate\par}
-  \end{titlepage}}
+  \end{titlepage}%
+  \hypersetup{pageanchor=true}}
 
 % ---- committee approval page -------------------------------------------------
 \newcommand{\makeapproval}{%

@@ -14,7 +14,10 @@ Thesis source (English, IU SCSE format reconstructed from past theses).
 
 Build (any one):
 
-- `tectonic main.tex` (single binary, fetches packages itself)
+- `tectonic -X compile main.tex` (XeTeX engine, fetches packages itself; installed on this
+  machine at `%LOCALAPPDATA%\Programs\tectonic\tectonic.exe`, not on PATH). First run downloads
+  ~40 MB of packages (~10 min); later runs take seconds. A `Fontconfig error` line on Windows is
+  harmless.
 - `latexmk -pdf main.tex` (TeX Live / MiKTeX)
 - Overleaf: upload this folder, compiler pdfLaTeX
 

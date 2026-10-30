@@ -137,7 +137,23 @@ Về **thống kê** (bài học từ parent repo): báo cáo Deflated Sharpe Ra
 | Pre-thesis | Literature review; dữ liệu sạch (adjusted); guideline + gán nhãn mẫu; detector rule-based v1; backtest Python baseline; prototype MT5 custom symbol trên 3–5 mã |
 | Thesis | Detector hybrid (ML); toàn universe + walk-forward; MT5 xác nhận; robustness theo giai đoạn / HNX-liquid; viết báo cáo |
 
-## 11. Câu hỏi mở (cần chốt)
+## 11. Tooling
+
+| Vai trò | Lựa chọn | Trạng thái |
+|---|---|---|
+| Data | SSI FastConnect + parquet của parent repo | ✅ Dùng. **Bỏ vnstock** — tính năng tốt cần premium, SSI đã đủ |
+| Backtest Python | `vectorbt` (`external/vectorbt`, submodule shallow, chỉ đọc) | ✅ Đã thêm |
+| Backtest xác nhận | MetaTrader 5 + custom symbol | ⏳ Chưa cài terminal / `MetaTrader5` |
+| Điều phối agent | xem đề xuất bên dưới | ⏳ Chờ chốt |
+| Viết report | xem đề xuất bên dưới | ⏳ Chờ chốt — cần biết trường |
+
+Đề xuất điều phối agent (cài dạng plugin, khai báo trong `.claude/settings.json` của repo này để versioned):
+- **Workflow chính — chọn MỘT:** harness `vc` (RIPER-5) của parent repo qua skill `vc-setup` (đã quen, nặng) *hoặc* `obra/superpowers` (MIT, nhẹ hơn: brainstorm → plan → TDD → review). Không cài cả hai — trùng vai trò.
+- **Nghiên cứu + viết:** `Imbad0202/academic-research-skills` (CC BY-NC 4.0 — OK cho luận văn phi thương mại, phải ghi attribution): deep research, paper writing pipeline, reviewer panel, citation-check qua Semantic Scholar, xuất LaTeX.
+
+Đề xuất report: thư mục `report/` ngay trong repo này (hình/bảng sinh thẳng từ `notebooks/`). Template: của trường nếu có; không thì LaTeX tổng quát (`joaomlourenco/novathesis` hoặc `Pseudomanifold/latex-mimosis`). Template được copy vào (không submodule) vì sẽ sửa trực tiếp. Không tìm thấy template LaTeX của trường VN nào trên GitHub đủ uy tín.
+
+## 12. Câu hỏi mở (cần chốt)
 
 1. Repo GitHub: tên `wyckoff-thesis`, **private**? (gh CLI chưa cài — cần tạo repo trống trên github.com hoặc cài `gh`.)
 2. Ngôn ngữ báo cáo: tiếng Anh hay tiếng Việt? LaTeX (Overleaf) hay Word?

@@ -1,0 +1,4 @@
+[submodule "external/vectorbt"]
+	path = external/vectorbt
+	url = https://github.com/polakowo/vectorbt.git
+	shallow = true

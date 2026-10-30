@@ -31,3 +31,6 @@ mt5/tester/
 *.out
 *.synctex.gz
 *.toc
+
+# Overleaf upload bundle (regenerable from report/)
+*.zip

@@ -1,0 +1,48 @@
+% Build: tectonic main.tex   |   latexmk -pdf main.tex   |   upload report/ to Overleaf (pdfLaTeX)
+\documentclass[12pt,oneside]{report}
+\usepackage{iuthesis}
+
+% ---- metadata -----------------------------------------------------------------
+\thesistitle{Wyckoff Pattern Detection for Market Phase Identification on the Vietnamese Stock Market}
+\studentname{Your Name}          % no diacritics on the cover, past IU theses use "Phan Manh Son"
+\studentid{ITDSIU2XXXX}
+\supervisor{Supervisor Name, PhD}
+\degree{Bachelor of Data Science}
+\submissiondate{Month Year}
+\documentkind{thesis}            % "pre-thesis report" for the pre-thesis milestone
+
+\makenoidxglossaries
+\input{frontmatter/abbreviations}
+
+\begin{document}
+
+% ---- front matter -------------------------------------------------------------
+\pagenumbering{roman}
+\makecover
+\makeapproval
+\input{frontmatter/acknowledgements}
+\tableofcontents
+\listoftables
+\listoffigures
+\printnoidxglossary[type=\acronymtype,title={List of Abbreviations}]
+\input{frontmatter/abstract}
+
+% ---- main matter --------------------------------------------------------------
+\clearpage
+\pagenumbering{arabic}
+\input{chapters/01-introduction}
+\input{chapters/02-related-work}
+\input{chapters/03-methodology}
+\input{chapters/04-implementation}
+\input{chapters/05-results}
+\input{chapters/06-discussion}
+\input{chapters/07-conclusion}
+
+% ---- back matter --------------------------------------------------------------
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\appendix
+\input{appendices/a-vn-market-rules}
+
+\end{document}

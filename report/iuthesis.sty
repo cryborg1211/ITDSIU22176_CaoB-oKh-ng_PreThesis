@@ -1,0 +1,91 @@
+% iuthesis.sty -- layout for an International University (VNU-HCM), School of Computer
+% Science and Engineering bachelor thesis. Reconstructed from past SCSE theses (2025):
+% cover -> committee approval -> acknowledgements -> contents/lists -> abstract -> chapters.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{iuthesis}[2026/10/30 IU SCSE bachelor thesis layout]
+
+% ---- page + text -------------------------------------------------------------
+\RequirePackage[a4paper,left=3cm,right=2cm,top=2.5cm,bottom=2.5cm]{geometry}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{lmodern}
+\RequirePackage{microtype}
+\RequirePackage{setspace}
+\onehalfspacing
+\RequirePackage{indentfirst}
+\setlength{\parskip}{0.4em}
+
+% ---- content packages --------------------------------------------------------
+\RequirePackage{amsmath,amssymb,amsthm}
+\RequirePackage{graphicx}
+\graphicspath{{figures/}}
+\RequirePackage{booktabs,tabularx,multirow}
+\RequirePackage{float}
+\RequirePackage{caption,subcaption}
+\RequirePackage{xcolor}
+\RequirePackage{listings}
+\RequirePackage[ruled,vlined,linesnumbered]{algorithm2e}
+\RequirePackage[nottoc]{tocbibind}
+\RequirePackage[numbers,sort&compress]{natbib}
+\RequirePackage[hidelinks]{hyperref}
+% acronyms via \makenoidxglossaries: no makeglossaries/xindy run needed (tectonic, Overleaf)
+\RequirePackage[acronym,nonumberlist,nopostdot,toc]{glossaries}
+\RequirePackage[nameinlink,capitalise]{cleveref}
+
+\lstset{basicstyle=\ttfamily\small,breaklines=true,frame=single,
+        numbers=left,numberstyle=\tiny,columns=fullflexible}
+
+% ---- metadata macros (set in main.tex) ---------------------------------------
+\newcommand{\thesistitle}[1]{\def\@thesistitle{#1}}
+\newcommand{\studentname}[1]{\def\@studentname{#1}}
+\newcommand{\studentid}[1]{\def\@studentid{#1}}
+\newcommand{\supervisor}[1]{\def\@supervisor{#1}}
+\newcommand{\degree}[1]{\def\@degree{#1}}
+\newcommand{\submissiondate}[1]{\def\@submissiondate{#1}}
+\newcommand{\documentkind}[1]{\def\@documentkind{#1}}
+\documentkind{thesis}
+
+% ---- cover -------------------------------------------------------------------
+\newcommand{\makecover}{%
+  \begin{titlepage}
+    \centering
+    {\large\bfseries VIETNAM NATIONAL UNIVERSITY OF HO CHI MINH CITY\\[2pt]
+     THE INTERNATIONAL UNIVERSITY\\[2pt]
+     SCHOOL OF COMPUTER SCIENCE AND ENGINEERING\par}
+    \vspace{1.2cm}
+    \IfFileExists{figures/iu-logo.png}{\includegraphics[width=3.2cm]{iu-logo.png}\par}{}
+    \vspace{1.5cm}
+    {\LARGE\bfseries \MakeUppercase{\@thesistitle}\par}
+    \vspace{1.8cm}
+    {\large By\\[4pt] \textbf{\@studentname} -- \@studentid\par}
+    \vspace{1cm}
+    {\large Instructed by\\[4pt] \textbf{\@supervisor}\par}
+    \vfill
+    {\normalsize A \@documentkind\ submitted to the School of Computer Science and Engineering\\
+     in partial fulfillment of the requirements for the degree of\\
+     \@degree\par}
+    \vspace{1cm}
+    {\normalsize Ho Chi Minh City, Vietnam\\ \@submissiondate\par}
+  \end{titlepage}}
+
+% ---- committee approval page -------------------------------------------------
+\newcommand{\makeapproval}{%
+  \clearpage\thispagestyle{empty}
+  \begin{center}
+    {\Large\bfseries \@thesistitle\par}
+    \vspace{1.5cm}
+    {\bfseries APPROVED BY:\par}
+  \end{center}
+  \vspace{1cm}
+  \foreach@committee{Chair}\foreach@committee{Member}\foreach@committee{Member}%
+  \foreach@committee{Member}
+  \vfill
+  \begin{center}{\bfseries THESIS COMMITTEE}\end{center}
+  \clearpage}
+\newcommand{\foreach@committee}[1]{%
+  \noindent\hfill\begin{minipage}{0.55\textwidth}
+    \rule{\linewidth}{0.4pt}\\[-2pt]
+    {\small(Typed committee name here -- #1)}
+  \end{minipage}\par\vspace{1.4cm}}
+
+\endinput

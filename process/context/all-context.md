@@ -177,7 +177,9 @@ wyckoff-thesis/
   .claude/                -- agents (12), skills (31), hooks
 ```
 
-Planned: `report/` (thesis source, figures generated from `notebooks/`).
+`report/` -- LaTeX thesis (IU SCSE format, `iuthesis.sty`, `main.tex`, 7 chapter skeletons).
+MT5 is both the confirmation engine and the GUI/demo (phase indicator + Strategy Tester visual
+mode); no Streamlit.
 
 ## Technology Stack
 

@@ -1,0 +1,35 @@
+\chapter{Methodology}
+\label{ch:methodology}
+
+\section{Data}
+% Source (SSI FastConnect), universe and liquidity filter, period, price units
+% (thousands of VND), corporate-action adjustment on a single basis.
+
+\section{Wyckoff Event and Phase Definitions}
+% Operational definitions for every event; table: event -> price rule -> volume rule.
+
+\section{Detector}
+\subsection{Swing Points and Trading Ranges}
+\subsection{Event Rules}
+\subsection{Phase Assignment}
+\subsection{Hybrid Filter (ML)}
+% Rules generate candidates, classifier filters them (meta-labeling).
+\subsection{Look-Ahead Control}
+% Every event carries start_bar and confirm_bar; decisions only use confirm_bar.
+
+\section{Ground-Truth Annotation}
+% Guideline, sampling, annotators, agreement measure.
+
+\section{Trading Rules}
+% Entries (Spring+Test, SOS->LPS/BU), exits (target, distribution signs, stops, time stop).
+
+\section{Risk Management}
+% Risk per trade, R:R floor, gap buffer for limit-lock, position/sector/liquidity caps,
+% market-context exposure.
+
+\section{Backtest Design}
+% VN constraints (Appendix~\ref{app:vn-rules}), costs, walk-forward, baselines.
+
+\section{Evaluation Metrics}
+% RQ1: event precision/recall/F1 with +/-k bar tolerance. RQ2: CAGR, Sharpe, Sortino, MaxDD,
+% expectancy (R), \gls{dsr}, \gls{pbo}. RQ3: per-regime and cross-engine agreement.

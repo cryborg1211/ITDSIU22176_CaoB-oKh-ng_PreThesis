@@ -92,7 +92,7 @@ Thực tế cần biết:
 - Phải tự mô hình hóa trong EA: long-only, lô 100, bước giá HOSE (10/50/100 VND theo vùng giá), biên ±7%, giữ tối thiểu T+2, phí + thuế bán.
 - Package Python `MetaTrader5` (chỉ Windows — OK) **chưa cài** trong môi trường hiện tại; cần cài terminal MT5 (bất kỳ broker demo nào) + `pip install MetaTrader5`.
 
-**Đề xuất:** Python là engine nghiên cứu chính (nhanh, walk-forward, nhiều mã), MT5 là engine **xác nhận độc lập** trên tập mã đại diện. Hai engine ra cùng kết quả = luận điểm robustness mạnh cho RQ3.
+**Chốt (30-10):** Python là engine nghiên cứu chính (data, gán nhãn, sweep, walk-forward, DSR/PBO, số liệu report). MT5 đóng hai vai: **engine xác nhận độc lập** (EA + Strategy Tester, RQ3) và **GUI/demo** (indicator MQL5 vẽ trading range, nhãn event, tô nền pha A–E trên chart custom symbol; Strategy Tester visual mode khi bảo vệ). Không dùng Streamlit. Model ML của detector hybrid train bằng Python → export **ONNX** → chạy trong indicator/EA. Detector có hai bản (Python, MQL5) → đối chiếu danh sách event giữa hai bản là một phần của RQ3.
 
 ## 7. Chỉ báo cần chú ý
 
@@ -145,13 +145,13 @@ Về **thống kê** (bài học từ parent repo): báo cáo Deflated Sharpe Ra
 | Backtest Python | `vectorbt` (`external/vectorbt`, submodule shallow, chỉ đọc) | ✅ Đã thêm |
 | Backtest xác nhận | MetaTrader 5 + custom symbol | ⏳ Chưa cài terminal / `MetaTrader5` |
 | Điều phối agent | xem đề xuất bên dưới | ⏳ Chờ chốt |
-| Viết report | xem đề xuất bên dưới | ⏳ Chờ chốt — cần biết trường |
+| Viết report | LaTeX trong `report/`, format IU SCSE (`iuthesis.sty`) | ✅ Template dựng xong, chưa compile thử |
 
 Đề xuất điều phối agent (cài dạng plugin, khai báo trong `.claude/settings.json` của repo này để versioned):
 - **Workflow chính — chọn MỘT:** harness `vc` (RIPER-5) của parent repo qua skill `vc-setup` (đã quen, nặng) *hoặc* `obra/superpowers` (MIT, nhẹ hơn: brainstorm → plan → TDD → review). Không cài cả hai — trùng vai trò.
 - **Nghiên cứu + viết:** `Imbad0202/academic-research-skills` (CC BY-NC 4.0 — OK cho luận văn phi thương mại, phải ghi attribution): deep research, paper writing pipeline, reviewer panel, citation-check qua Semantic Scholar, xuất LaTeX.
 
-Đề xuất report: thư mục `report/` ngay trong repo này (hình/bảng sinh thẳng từ `notebooks/`). Template: của trường nếu có; không thì LaTeX tổng quát (`joaomlourenco/novathesis` hoặc `Pseudomanifold/latex-mimosis`). Template được copy vào (không submodule) vì sẽ sửa trực tiếp. Không tìm thấy template LaTeX của trường VN nào trên GitHub đủ uy tín.
+Report: `report/` trong repo này, tiếng Anh, LaTeX. `iuthesis.sty` dựng lại theo format các thesis SCSE trước (bìa VNU-HCM/IU/SCSE, trang hội đồng, acknowledgements, TOC + lists, abstract, 7 chương). Build bằng tectonic / latexmk / Overleaf (pdfLaTeX). Hình sinh từ code, không vẽ tay.
 
 ## 12. Câu hỏi mở (cần chốt)
 

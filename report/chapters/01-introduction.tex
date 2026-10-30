@@ -1,0 +1,33 @@
+\chapter{Introduction}
+\label{ch:introduction}
+
+\section{Motivation}
+% Wyckoff is widely taught and traded discretionarily in Vietnam, but almost never tested
+% systematically on \gls{hose} data with realistic costs and market rules.
+
+\section{Problem Statement}
+% Discretionary phase reading is subjective and not reproducible; past student work on VN
+% trading strategies ignores transaction costs, settlement and price limits.
+
+\section{Research Questions}
+\label{sec:rq}
+\begin{description}
+  \item[RQ1 (Detection)] How accurately can Wyckoff events and phases be detected
+    automatically on daily \gls{hose} data, compared with human annotation?
+  \item[RQ2 (Profitability)] Do entry/exit rules derived from detected phases beat
+    buy-and-hold VN-Index and a simple breakout baseline after costs and taxes?
+  \item[RQ3 (Robustness)] Do the results hold across market regimes and across two
+    independent backtest engines (Python and \gls{mt5})?
+\end{description}
+
+\section{Scope and Objectives}
+% Universe: liquid HOSE stocks (ADV filter). Long-only, daily bars. Out of scope: HNX/UPCoM
+% as main universe, intraday trading, short selling, live trading.
+
+\section{Contributions}
+% 1) VN-specific detector + annotation guideline and labeled sample
+% 2) cost- and rule-aware backtest with DSR/PBO
+% 3) MT5 indicator + EA as a cross-engine check and a visual tool
+
+\section{Thesis Structure}
+% One sentence per chapter.

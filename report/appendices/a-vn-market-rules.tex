@@ -1,0 +1,21 @@
+\chapter{Vietnamese Market Rules Used in the Backtest}
+\label{app:vn-rules}
+
+\begin{table}[H]
+  \centering
+  \caption{\gls{hose} trading constraints modelled in both engines (verify against the
+    current HOSE regulation before final submission).}
+  \label{tab:vn-rules}
+  \begin{tabularx}{\linewidth}{lX}
+    \toprule
+    Rule & Value / treatment \\
+    \midrule
+    Daily price band  & $\pm 7\%$ of reference price; a limit-locked bar may not fill \\
+    Settlement        & T+2; minimum holding period enforced before a sell \\
+    Lot size          & 100 shares \\
+    Tick size         & by price tier (10 / 50 / 100 VND) \\
+    Short selling     & not available to retail; strategy is long-only \\
+    Fees and tax      & broker fee per side + 0.1\% tax on sell value \\
+    \bottomrule
+  \end{tabularx}
+\end{table}

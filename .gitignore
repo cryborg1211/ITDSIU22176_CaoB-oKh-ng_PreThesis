@@ -1,0 +1,33 @@
+# Data (regenerable from parent repo / SSI FastConnect)
+data/*
+!data/.gitkeep
+*.parquet
+*.duckdb
+*.csv
+
+# Secrets
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+
+# MT5 build / tester output
+*.ex5
+mt5/**/*.log
+mt5/tester/
+
+# LaTeX build artefacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc

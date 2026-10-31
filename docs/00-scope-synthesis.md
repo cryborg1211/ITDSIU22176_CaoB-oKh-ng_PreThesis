@@ -85,6 +85,13 @@ Hướng phương pháp detector (so sánh trong thesis):
 
 ⚠️ **Điều chỉnh giá:** parent repo từng có 878 bước nhảy giả do corporate action (xem `../scripts/refetch_adjusted_ohlcv.py`). Một bước -30% giả sẽ tạo "Selling Climax" giả → phải dùng chuỗi đã refetch trên cùng một basis adjustment trước khi gán nhãn.
 
+### Chốt (31-10) — mốc dữ liệu, theo EDA `docs/eda/data-layers.md`
+
+- **Mẫu chính = layer A (SSI), 26-02-2020 → 30-10-2026**, 448 mã (36 mã đã hủy niêm yết/chuyển sàn), không survivorship bias, có giá thô + tham chiếu/trần/sàn + foreign flow. Vẫn có 3 regime: COVID 2020–21, bear 2022 (−40%), sideway 2023–26.
+- **Layer B (VCI) trước 2020** chỉ dùng làm kiểm tra robustness ngoài kỳ (thêm đợt điều chỉnh 2018, −27%), luôn ghi kèm survivorship bias. **Không nối** A+B: khác quy ước điều chỉnh (B điều chỉnh cả cổ tức tiền, SSI không) → tạo seam ngay điểm nối.
+- Phải làm sạch trước detector: (1) 7,9% phiên không khớp lệnh có OHLC rác → cờ non-trading, bỏ giá; (2) 2.685 dòng `ref_price = 0`; (3) `ClosePriceAdjusted` của SSI chỉ điều chỉnh 195/350 phiên ex-right lớn → **tự tính back-adjust từ giá tham chiếu sàn** (ref/close phiên trước = hệ số chính xác; 95,3% phiên = 1, phần còn lại đang kiểm tra).
+- Ưu/nhược đã ghi vào report §3.1 (bảng `tab:data-period`).
+
 ## 6. Backtest trên MetaTrader 5
 
 Thực tế cần biết:

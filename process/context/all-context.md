@@ -110,6 +110,7 @@ durable docs.
 
 | Feature | Folder | Status |
 |---|---|---|
+| Data layers (SSI 2020+, VCI refetch 2013+, index) | `process/features/data/` | in-progress |
 | Wyckoff detector (rule-based → hybrid ML) | `process/features/detector/` | not-started |
 | Labeling (guideline + manual annotation) | `process/features/labeling/` | not-started |
 | Python backtest (vectorbt) | `process/features/backtest/` | not-started |
@@ -122,6 +123,7 @@ durable docs.
 |---|---|
 | scope, research questions, strategy | `docs/00-scope-synthesis.md` |
 | architecture or stack questions | this file |
+| datasets, SSI API, price adjustment | `process/features/data/_GUIDE.md` |
 | detector / events / phases | `process/features/detector/_GUIDE.md` |
 | ground-truth labels, annotation | `process/features/labeling/_GUIDE.md` |
 | backtest, costs, metrics | `process/features/backtest/_GUIDE.md` |

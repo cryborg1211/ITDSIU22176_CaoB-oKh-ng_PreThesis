@@ -35,3 +35,5 @@ mt5/tester/
 # Overleaf upload bundle (regenerable from report/)
 *.zip
 report/main.pdf
+
+.claude/hooks/.logs/

@@ -1,4 +1,4 @@
-# Failure log
+﻿# Failure log
 
 Every failure, bug, rejected approach or broken run, recorded **when it is found**, with the
 version it happened on. Source material for the thesis (methodology iterations, limitations,
@@ -55,7 +55,7 @@ Entry format:
 - Thesis use: none
 
 ## 2026-10-31 — SSI layer-A build: empty page mid-window + run crossed midnight
-- Version: uncommitted data pipeline (parent of the commit that adds `PagingError`)
+- Version: pre-commit working tree; fixed in 073fe03
 - Area: data
 - Tried: `python scripts/build_data.py`, full DailyStockPrice pull 2020-01 → 2026-10, 83 windows
 - Failed: (1) after 79 windows, `2026-06-28..2026-07-27: page 40 empty with 39000/51674 rows`
@@ -70,7 +70,7 @@ Entry format:
 - Thesis use: data-collection section — API reliability and why one adjustment basis matters
 
 ## 2026-10-31 — SSI paging silently duplicated rows: layer A was ~35% duplicates
-- Version: uncommitted data pipeline, `PAGE_SIZE = 1000` (before the commit that sets 100_000)
+- Version: pre-commit working tree with `PAGE_SIZE = 1000`; fixed in 073fe03
 - Area: data
 - Tried: market-wide `DailyStockPrice` pull, 30-day windows, `pageSize=1000`, collect pages until
   `len(rows) == totalRecord`
@@ -88,7 +88,7 @@ Entry format:
   dataset; validate by key uniqueness and bar counts per ticker, not by HTTP status or row count
 
 ## 2026-10-31 — SSI rows that look fine but are not: placeholder bars and partial adjustment
-- Version: layer A built 31-10-2026 (single basis), EDA in `scripts/eda_data_layers.py`
+- Version: 073fe03 (layer A built 31-10-2026, single basis); cleaning not yet built
 - Area: data
 - Tried: use SSI `ClosePriceAdjusted` + raw OHLC directly as the detector input
 - Failed: 2,479 opening gaps beyond −11% survived on the adjusted series (should be ~0 inside a

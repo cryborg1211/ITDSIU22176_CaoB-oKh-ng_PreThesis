@@ -44,6 +44,25 @@ META = {
         "ack": "Acknowledgements", "toc": "Table of Contents", "abbr": "List of Abbreviations",
         "abstract": "Abstract", "refs": "References", "todo": "[To be written.]", "todo_last": "[To be written last.]",
         "toc_hint": "Right-click and choose Update Field to build the table of contents.",
+        "ack_text": [
+            "Few people have never dreamed of financial freedom, of money that earns money while its owner sleeps. I am "
+            "no exception. The stock market is the most accessible place to chase that dream, and for a data science "
+            "student it is also an irresistible puzzle: thousands of new numbers every day, and the promise that "
+            "somewhere in them lies a pattern others have missed.",
+            "The Vietnamese market adds its own twist. In my experience, know-how here is closely guarded: those who "
+            "appear to have an edge rarely explain it, and what is shared in public is mostly tips without method. "
+            "Whether real alpha exists on the Ho Chi Minh City Stock Exchange or not, it is not written down anywhere a "
+            "newcomer can learn from. That alone made me want to look for myself.",
+            "There is, honestly, some ego involved as well: the wish to find out whether one student with public data and "
+            "careful methods can beat a market that many professionals do not. This thesis is my chance to try that "
+            "seriously, with costs, market rules and statistics strict enough that the answer is believable whichever "
+            "way it turns out. I also hope it is useful to those who come after me: if it leaves behind a clean dataset, "
+            "a fair way to evaluate strategies and an honest record of what works and what does not, the next student "
+            "who tries to beat the Vietnamese market can start where this work ends rather than where it began.",
+            "I am grateful to my supervisor, Assoc. Prof. Ha Viet Uyen Synh, for pointing me towards this topic and for "
+            "giving me the freedom to shape it, and to the School of Computer Science and Engineering for the knowledge "
+            "that made the work possible. Finally, I thank my family and friends for their patience and support throughout.",
+        ],
         "abstract_text": [
             "Choosing when to buy and sell stocks is hard, and harder on the Ho Chi Minh City Stock Exchange (HOSE), "
             "where a ±7% daily price band, delayed settlement, trading costs and speculative operators make many "
@@ -88,6 +107,27 @@ META = {
         "ack": "Lời cảm ơn", "toc": "Mục lục", "abbr": "Danh mục từ viết tắt",
         "abstract": "Tóm tắt", "refs": "Tài liệu tham khảo", "todo": "[Sẽ viết sau.]", "todo_last": "[Viết sau cùng.]",
         "toc_hint": "Nhấp chuột phải và chọn Update Field để tạo mục lục.",
+        "ack_text": [
+            "Hiếm ai chưa từng mơ về tự do tài chính, về những đồng tiền tự sinh ra tiền ngay cả khi chủ của chúng đang "
+            "ngủ. Tôi cũng không ngoại lệ. Thị trường chứng khoán là nơi dễ tiếp cận nhất để theo đuổi giấc mơ đó, và với "
+            "một sinh viên khoa học dữ liệu, nó còn là một câu đố khó cưỡng: mỗi ngày hàng nghìn con số mới, cùng lời hứa "
+            "rằng đâu đó trong chúng có một quy luật mà người khác đã bỏ lỡ.",
+            "Thị trường Việt Nam còn có nét riêng. Theo trải nghiệm của tôi, kinh nghiệm ở đây được giữ rất kỹ: những "
+            "người dường như có lợi thế hiếm khi giải thích nó, còn những gì được chia sẻ công khai phần lớn là \"phím "
+            "hàng\" không kèm phương pháp. Dù lợi thế (alpha) thật sự có tồn tại trên Sở Giao dịch Chứng khoán TP. Hồ Chí "
+            "Minh hay không, nó cũng chưa được ghi lại ở bất kỳ đâu để người mới có thể học. Chỉ riêng điều đó đã đủ khiến "
+            "tôi muốn tự mình tìm hiểu.",
+            "Thành thật mà nói, cái tôi cá nhân cũng góp một phần: mong muốn biết liệu một sinh viên với dữ liệu công khai "
+            "và phương pháp cẩn thận có thể thắng được thị trường mà nhiều người chuyên nghiệp còn chưa thắng hay không. "
+            "Khóa luận này là cơ hội để tôi thử điều đó một cách nghiêm túc, với chi phí, luật thị trường và thống kê đủ "
+            "chặt để câu trả lời đáng tin, dù kết quả nghiêng về phía nào. Tôi cũng mong công trình có ích cho những người "
+            "đi sau: nếu nó để lại được một bộ dữ liệu sạch, một cách đánh giá chiến lược công bằng và một ghi chép trung "
+            "thực về điều gì hiệu quả và điều gì không, thì sinh viên tiếp theo muốn thắng thị trường Việt Nam có thể bắt "
+            "đầu từ nơi công trình này kết thúc, thay vì từ nơi nó bắt đầu.",
+            "Tôi xin chân thành cảm ơn giảng viên hướng dẫn, PGS. TS. Hà Việt Uyên Synh, đã định hướng đề tài và cho tôi "
+            "tự do phát triển nó, cùng Khoa Khoa học và Kỹ thuật Máy tính đã trang bị kiến thức để tôi thực hiện công trình "
+            "này. Cuối cùng, tôi cảm ơn gia đình và bạn bè đã luôn kiên nhẫn và ủng hộ tôi.",
+        ],
         "abstract_text": [
             "Quyết định khi nào mua và bán cổ phiếu đã khó, trên Sở Giao dịch Chứng khoán TP. Hồ Chí Minh (HOSE) còn "
             "khó hơn: biên độ giá ±7% mỗi phiên, thanh toán trễ, chi phí giao dịch và các nhóm đầu cơ khiến nhiều chiến "
@@ -311,9 +351,9 @@ def build(lang: str, ch1: list, ch2: list, ch3: list, out: Path) -> None:
     _page_break(doc)
 
     # acknowledgements, contents, abbreviations, abstract ------------------------------------
-    for heading, text in ((m["ack"], m["todo"]),):
-        doc.add_heading(heading, level=1).alignment = WD_ALIGN_PARAGRAPH.CENTER
-        doc.add_paragraph(text)
+    doc.add_heading(m["ack"], level=1).alignment = WD_ALIGN_PARAGRAPH.CENTER
+    for para in m["ack_text"]:
+        doc.add_paragraph(para).alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
     _page_break(doc)
     _centered(doc, m["toc"], 16, bold=True, space_after=12)
     _field(doc.add_paragraph(), 'TOC \\o "1-3" \\h \\z \\u', m["toc_hint"])

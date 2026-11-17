@@ -31,26 +31,7 @@ EN: list[Block] = [
           "market (Lo, 2004). Machine learning now routinely finds weak but real structure in stock "
           "returns (Krauss et al., 2017; Gu et al., 2020). Whether that structure can be turned into "
           "better decisions on the Vietnamese market, under its own rules, is far less studied."),
-    ("h2", "1.2 Personal Motivation"),
-    ("p", "Few people have never dreamed of financial freedom, of money that earns money while its owner sleeps. "
-          "I am no exception. The stock market is the most accessible place to chase that dream, and for a data "
-          "science student it is also an irresistible puzzle: thousands of new numbers every day, and the promise "
-          "that somewhere in them lies a pattern others have missed."),
-    ("p", "The Vietnamese market adds its own twist. In my experience, know-how here is closely guarded: those who "
-          "appear to have an edge rarely explain it, and what is shared in public is mostly tips without method. "
-          "Whether real alpha exists on HOSE or not, it is not written down anywhere a newcomer can learn from. That "
-          "alone made me want to look for myself."),
-    ("p", "There is, honestly, some ego involved as well: the wish to find out whether one student with public data "
-          "and careful methods can beat a market that many professionals do not. A thesis is a rare chance to try "
-          "this seriously, with costs, market rules and statistics strict enough that the answer is believable "
-          "whichever way it turns out."),
-    ("p", "Finally, I want the work to be useful to those who come after me. Most forecasting research is built on "
-          "large, developed markets, and its lessons do not carry over cleanly to a market with a ±7% daily band, "
-          "delayed settlement, opaque speculative operators and data that must be repaired before use. If this thesis "
-          "leaves behind a clean dataset, a fair way to evaluate strategies and an honest record of what works and "
-          "what does not, the next student who tries to beat the Vietnamese market can start where this one ends "
-          "rather than where it began."),
-    ("h2", "1.3 Problem Statement"),
+    ("h2", "1.2 Problem Statement"),
     ("p", "A trading aid for the Ho Chi Minh City Stock Exchange (HOSE) faces weaknesses on three "
           "sides. Each one, if ignored, makes a system look better on paper than it can be in practice."),
     ("lead", "The market."),
@@ -75,7 +56,7 @@ EN: list[Block] = [
             "Models output a probability, not a decision: they do not say whether to act, how much, "
             "when to exit or why, which matters most for investors already prone to overtrading and "
             "to holding losers (Barber and Odean, 2000; Shefrin and Statman, 1985)."]),
-    ("h2", "1.4 Proposed Direction"),
+    ("h2", "1.3 Proposed Direction"),
     ("p", "This thesis develops an AI-driven decision support system (DSS) for trading HOSE stocks: a "
           "system that supports the investor's decision rather than replacing it (Power, 2002). In outline:"),
     ("ul", ["a cleaned, survivorship-free daily dataset of HOSE stocks, with its defects measured and documented;",
@@ -87,7 +68,7 @@ EN: list[Block] = [
             "implementation as an independent check."]),
     ("p", "Research questions, scope and the detailed design are fixed in the following chapters as "
           "the work progresses."),
-    ("h2", "1.5 Thesis Structure"),
+    ("h2", "1.4 Thesis Structure"),
     ("p", "Chapter 2 reviews related work. Chapter 3 describes the data and the system design. Chapter 4 "
           "presents the implementation, Chapter 5 the experiments and Chapter 6 their interpretation. "
           "Chapter 7 concludes."),
@@ -105,27 +86,7 @@ VI: list[Block] = [
           "yếu nhưng có thật trong lợi suất cổ phiếu (Krauss và cộng sự, 2017; Gu và cộng sự, 2020). Tuy "
           "nhiên, việc biến các cấu trúc đó thành quyết định tốt hơn trên thị trường Việt Nam, theo đúng "
           "luật của thị trường này, vẫn còn rất ít được nghiên cứu."),
-    ("h2", "1.2 Động lực cá nhân"),
-    ("p", "Hiếm ai chưa từng mơ về tự do tài chính, về những đồng tiền tự sinh ra tiền ngay cả khi chủ của chúng "
-          "đang ngủ. Tôi cũng không ngoại lệ. Thị trường chứng khoán là nơi dễ tiếp cận nhất để theo đuổi giấc mơ "
-          "đó, và với một sinh viên khoa học dữ liệu, nó còn là một câu đố khó cưỡng: mỗi ngày hàng nghìn con số "
-          "mới, cùng lời hứa rằng đâu đó trong chúng có một quy luật mà người khác đã bỏ lỡ."),
-    ("p", "Thị trường Việt Nam còn có nét riêng. Theo trải nghiệm của tôi, kinh nghiệm ở đây được giữ rất kỹ: "
-          "những người dường như có lợi thế hiếm khi giải thích nó, còn những gì được chia sẻ công khai phần lớn là "
-          "\"phím hàng\" không kèm phương pháp. Dù lợi thế (alpha) thật sự có tồn tại trên HOSE hay không, nó cũng "
-          "chưa được ghi lại ở bất kỳ đâu để người mới có thể học. Chỉ riêng điều đó đã đủ khiến tôi muốn tự mình "
-          "tìm hiểu."),
-    ("p", "Thành thật mà nói, cái tôi cá nhân cũng góp một phần: mong muốn biết liệu một sinh viên với dữ liệu "
-          "công khai và phương pháp cẩn thận có thể thắng được thị trường mà nhiều người chuyên nghiệp còn chưa "
-          "thắng hay không. Khóa luận là cơ hội hiếm hoi để thử điều đó một cách nghiêm túc, với chi phí, luật thị "
-          "trường và thống kê đủ chặt để câu trả lời đáng tin, dù kết quả nghiêng về phía nào."),
-    ("p", "Cuối cùng, tôi muốn công trình này có ích cho những người đi sau. Phần lớn nghiên cứu dự báo được xây "
-          "dựng trên các thị trường lớn và phát triển, và bài học từ đó không áp dụng trọn vẹn được cho một thị "
-          "trường có biên độ ±7% mỗi phiên, thanh toán trễ, các nhóm đầu cơ không minh bạch và dữ liệu phải sửa "
-          "trước khi dùng. Nếu khóa luận để lại được một bộ dữ liệu sạch, một cách đánh giá chiến lược công bằng "
-          "và một ghi chép trung thực về điều gì hiệu quả và điều gì không, thì sinh viên tiếp theo muốn thắng thị "
-          "trường Việt Nam có thể bắt đầu từ nơi khóa luận này kết thúc, thay vì từ nơi nó bắt đầu."),
-    ("h2", "1.3 Đặt vấn đề"),
+    ("h2", "1.2 Đặt vấn đề"),
     ("p", "Một công cụ hỗ trợ giao dịch trên Sở Giao dịch Chứng khoán TP.HCM (HOSE) phải đối mặt với các "
           "điểm yếu từ ba phía. Bỏ qua bất kỳ điểm nào cũng khiến hệ thống trông tốt trên giấy hơn so với "
           "khi vận hành thực tế."),
@@ -153,7 +114,7 @@ VI: list[Block] = [
             "Mô hình chỉ đưa ra một xác suất chứ không phải một quyết định: không cho biết có nên hành động "
             "không, với bao nhiêu vốn, khi nào thoát và vì sao. Điều này càng quan trọng với nhà đầu tư vốn "
             "dễ giao dịch quá mức và gồng lỗ (Barber và Odean, 2000; Shefrin và Statman, 1985)."]),
-    ("h2", "1.4 Hướng tiếp cận đề xuất"),
+    ("h2", "1.3 Hướng tiếp cận đề xuất"),
     ("p", "Khóa luận nghiên cứu và phát triển một hệ thống hỗ trợ ra quyết định (DSS) dựa trên trí tuệ nhân "
           "tạo cho giao dịch cổ phiếu trên HOSE: một hệ thống hỗ trợ quyết định của nhà đầu tư chứ không "
           "thay thế họ (Power, 2002). Cụ thể gồm:"),
@@ -167,7 +128,7 @@ VI: list[Block] = [
             "khai trên MetaTrader 5 để đối chiếu độc lập."]),
     ("p", "Câu hỏi nghiên cứu, phạm vi và thiết kế chi tiết sẽ được xác định ở các chương sau theo tiến độ "
           "thực hiện."),
-    ("h2", "1.5 Bố cục khóa luận"),
+    ("h2", "1.4 Bố cục khóa luận"),
     ("p", "Chương 2 tổng quan các nghiên cứu liên quan. Chương 3 trình bày dữ liệu và thiết kế hệ thống. "
           "Chương 4 trình bày phần hiện thực, Chương 5 các thực nghiệm và Chương 6 phân tích kết quả. "
           "Chương 7 kết luận."),

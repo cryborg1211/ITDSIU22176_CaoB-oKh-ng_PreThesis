@@ -23,6 +23,7 @@ from docx.shared import Cm, Pt
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from build_intro_docx import EN, REFERENCES, VI, _font  # noqa: E402
+from content_ch2 import CH2_EN, CH2_VI  # noqa: E402
 from content_ch3 import CH3_EN, CH3_VI  # noqa: E402
 
 FIGURES = HERE.parent / "figures"
@@ -255,7 +256,7 @@ def _body(doc, blocks: list) -> None:
             doc.add_paragraph(block[1]).alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 
 
-def build(lang: str, ch1: list, ch3: list, out: Path) -> None:
+def build(lang: str, ch1: list, ch2: list, ch3: list, out: Path) -> None:
     m = META[lang]
     doc = Document()
     sec = doc.sections[0]
@@ -338,7 +339,7 @@ def build(lang: str, ch1: list, ch3: list, out: Path) -> None:
     _page_numbers(main, "decimal", 1)
     _body(doc, ch1)
     _page_break(doc)
-    _body(doc, [("h1", m["ch2"][0]), ("p", m["ch2"][1])])
+    _body(doc, ch2)
     _page_break(doc)
     _body(doc, ch3)
     _page_break(doc)
@@ -352,5 +353,5 @@ def build(lang: str, ch1: list, ch3: list, out: Path) -> None:
 
 
 if __name__ == "__main__":
-    build("en", EN, CH3_EN, HERE / "pre_thesis_report_en.docx")
-    build("vi", VI, CH3_VI, HERE / "pre_thesis_report_vi.docx")
+    build("en", EN, CH2_EN, CH3_EN, HERE / "pre_thesis_report_en.docx")
+    build("vi", VI, CH2_VI, CH3_VI, HERE / "pre_thesis_report_vi.docx")

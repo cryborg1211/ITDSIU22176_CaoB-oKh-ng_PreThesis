@@ -14,6 +14,7 @@ TABLE_LAYERS_ROWS = [
     ["Delisted / moved stocks included", "36", "0"],
     ["Raw prices, reference/limit prices", "yes", "no"],
     ["Foreign flow", "yes", "no"],
+    ["Access", "SSI account + registration", "open, no account"],
     ["Median bar completeness (a)", "1.000 (p5 0.995)", "1.000 (p5 0.971)"],
 ]
 TABLE_ROWS_EN = [
@@ -47,10 +48,18 @@ CH3_EN: list[Block] = [
            "listed instrument and session, raw OHLCV, the exchange's reference, ceiling and floor prices, an adjusted "
            "close, matched and put-through volume and value, and foreign buy/sell flow. Because each request is made by "
            "date rather than by ticker, stocks later delisted or moved to another exchange are included: the layer is "
-           "free of survivorship bias. The cross-section is complete from 26 February 2020."),
-    ("lp", "Layer B. ", "A one-pass refetch of adjusted daily bars from a third-party vendor (VCI), 2013–2026. It is "
-           "longer, but it only holds tickers still listed when it was fetched and it carries no raw prices, limit "
-           "prices or foreign flow."),
+           "free of survivorship bias. The cross-section is complete from 26 February 2020. Access is not open: the "
+           "user must hold an SSI securities account and register for the FastConnect service (at a branch, through a "
+           "broker or by post), after which a key set is created on the broker's web platform. Registration lasts one "
+           "year and must be renewed, and request rates are limited per key."),
+    ("lp", "Layer B. ", "A one-pass refetch of adjusted daily bars from a third-party vendor (VCI), 2013–2026, through "
+           "the open-source vnstock library, which needs no account or contract (anonymous use is limited to about 20 "
+           "requests a minute). It is longer, but it only holds tickers still listed when it was fetched and it carries "
+           "no raw prices, limit prices or foreign flow."),
+    ("p", "The difference in access matters for reproducibility. Anyone can rebuild layer B; rebuilding layer A requires "
+          "an SSI account and service registration. Every script that produced the cleaned dataset is therefore kept in "
+          "the thesis repository, and the dataset itself can be provided on request, so that results can be checked "
+          "without an SSI account."),
     ("p", "The two layers are not spliced into one series. They use different adjustment conventions (Section 3.1.5), "
           "so joining them would put a seam at the splice date."),
     ("h3", "3.1.2 Collection"),
@@ -182,10 +191,18 @@ CH3_VI: list[Block] = [
            "API trả về OHLCV thô, giá tham chiếu, giá trần, giá sàn của sở, giá đóng cửa đã điều chỉnh, khối lượng và giá "
            "trị khớp lệnh và thỏa thuận, cùng giao dịch mua/bán của nhà đầu tư nước ngoài. Vì mỗi lần gọi lấy theo ngày "
            "chứ không theo mã, các cổ phiếu sau này hủy niêm yết hoặc chuyển sàn vẫn có mặt: lớp dữ liệu không bị thiên "
-           "lệch sống sót. Dữ liệu đầy đủ toàn thị trường từ ngày 26/02/2020."),
-    ("lp", "Lớp B. ", "Bộ nến ngày đã điều chỉnh lấy một lần từ nhà cung cấp thứ ba (VCI), giai đoạn 2013–2026. Dài hơn, "
-           "nhưng chỉ chứa các mã còn niêm yết tại thời điểm lấy dữ liệu và không có giá thô, giá trần/sàn hay giao dịch "
-           "khối ngoại."),
+           "lệch sống sót. Dữ liệu đầy đủ toàn thị trường từ ngày 26/02/2020. Nguồn này không mở tự do: người dùng phải "
+           "có tài khoản chứng khoán tại SSI và đăng ký dịch vụ FastConnect (tại quầy, qua nhân viên môi giới hoặc qua "
+           "đường bưu điện), sau đó tự tạo bộ khóa kết nối trên nền tảng web của công ty chứng khoán. Đăng ký có thời "
+           "hạn một năm và phải gia hạn, số lượt gọi bị giới hạn theo từng khóa."),
+    ("lp", "Lớp B. ", "Bộ nến ngày đã điều chỉnh lấy một lần từ nhà cung cấp thứ ba (VCI), giai đoạn 2013–2026, thông "
+           "qua thư viện mã nguồn mở vnstock, không cần tài khoản hay hợp đồng (dùng ẩn danh bị giới hạn khoảng 20 lượt "
+           "gọi mỗi phút). Dài hơn, nhưng chỉ chứa các mã còn niêm yết tại thời điểm lấy dữ liệu và không có giá thô, "
+           "giá trần/sàn hay giao dịch khối ngoại."),
+    ("p", "Khác biệt về cách tiếp cận ảnh hưởng đến khả năng tái lập. Ai cũng có thể dựng lại lớp B; dựng lại lớp A cần "
+          "tài khoản SSI và đăng ký dịch vụ. Vì vậy toàn bộ mã nguồn tạo ra bộ dữ liệu đã làm sạch được lưu trong kho mã "
+          "của khóa luận, và bộ dữ liệu có thể được cung cấp khi có yêu cầu, để kết quả có thể được kiểm tra mà không "
+          "cần tài khoản SSI."),
     ("p", "Hai lớp không được nối thành một chuỗi. Chúng điều chỉnh giá theo quy ước khác nhau (Mục 3.1.5), nên nối lại "
           "sẽ tạo ra một điểm gãy ngay tại ngày nối."),
     ("h3", "3.1.2 Thu thập"),
@@ -206,6 +223,7 @@ CH3_VI: list[Block] = [
         ["Mã đã hủy niêm yết / chuyển sàn", "36", "0"],
         ["Giá thô, giá tham chiếu/trần/sàn", "có", "không"],
         ["Giao dịch khối ngoại", "có", "không"],
+        ["Cách truy cập", "tài khoản SSI + đăng ký dịch vụ", "mở, không cần tài khoản"],
         ["Độ đầy đủ trung vị (a)", "1,000 (p5 0,995)", "1,000 (p5 0,971)"],
     ], "(a) Số nến của mỗi mã chia cho số phiên giao dịch từ nến đầu đến nến cuối của mã đó."),
     ("fig", "Hình 3.1: Số mã HOSE có ít nhất một nến trong năm, theo từng lớp.", "data_coverage.png", 14),

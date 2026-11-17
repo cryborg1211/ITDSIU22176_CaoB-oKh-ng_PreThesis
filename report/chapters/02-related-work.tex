@@ -1,6 +1,78 @@
 \chapter{Related Work}
 \label{ch:related-work}
 
+\section{The Vietnamese Stock Market and How It Differs}
+\label{sec:vn-market}
+
+Much of the published work on machine learning for stock trading uses data from the United
+States, and much of the work on Asian markets uses mainland China. \gls{hose} shares some features with China but few with
+the United States, and several of its differences change what a model can learn and what a
+strategy can earn. Table~\ref{tab:market-compare} summarises them; the rules used in the
+backtest are listed in Appendix~\ref{app:vn-rules}.
+
+\begin{table}[ht]
+  \centering
+  \caption[Trading rules of HOSE compared with the markets most studies use]{Trading rules of
+    \acrshort{hose} compared with the markets most studies use (individual investors, ordinary
+    shares; to be verified against current regulations before final submission).}
+  \label{tab:market-compare}
+  \small
+  \begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.25\linewidth}
+      *{3}{>{\raggedright\arraybackslash}X}}
+    \toprule
+    & \acrshort{hose} (Vietnam) & NYSE / Nasdaq (US) & Shanghai / Shenzhen (China A-shares) \\
+    \midrule
+    Daily price limit per stock & $\pm7\%$ & none; five-minute pauses when a stock leaves a band around its recent price & $\pm10\%$ ($\pm20\%$ on growth boards) \\
+    Earliest sale after a purchase & after T+2 settlement & same day & next day \\
+    Minimum order & 100 shares & 1 share & 100 shares \\
+    Short selling by individuals & not available & available & limited \\
+    Tax on a sale & 0.1\% of value & none & stamp duty \\
+    Liquid cross-section & about 150 stocks hold 98.5\% of traded value (Section~\ref{sec:data-eda}) & thousands of stocks & thousands of stocks \\
+    Survivorship-free daily history available to this study & from 2020 & decades & decades \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+These differences have direct consequences for the models in this thesis.
+
+\begin{enumerate}
+  \item \textbf{Returns are truncated, risk is not.} No stock can move more than 7\% in a day, so
+    almost no daily return lies beyond three standard deviations (Section~\ref{sec:data-eda}).
+    A large fall is instead spread over several sessions locked at the floor, during which a
+    sell order may not fill. Price limits delay price discovery rather than remove the move
+    \citep{kim1997price}. A model must therefore treat a predicted exit as uncertain and a
+    stop-loss as a wish, not a guarantee.
+  \item \textbf{Every position is held for days.} A share bought today cannot be sold until
+    settlement, so same-day reversals and intraday strategies are impossible, and a wrong signal
+    is paid for over several sessions.
+  \item \textbf{Only rises can be traded.} Without short selling, a model can profit only from
+    stocks that go up; in the 2022 bear market ($-40\%$) the only defensive action was to hold
+    cash. Long--short anomalies that drive much of the US literature cannot be exploited here.
+  \item \textbf{Few independent bets.} The liquid cross-section is about 150 stocks, and the most
+    traded ones move together (mean pairwise correlation 0.39). Ranking-based strategies have
+    far fewer independent choices than on a market of thousands of stocks, and five positions
+    may behave like two.
+  \item \textbf{Short, imperfect history.} A clean, survivorship-free daily history covers under
+    seven years and three market regimes. Every configuration tried is a chance to fit noise, so
+    corrections for multiple testing are essential rather than optional
+    \citep{bailey2014dsr,bailey2017pbo}.
+  \item \textbf{Data must be repaired before use.} Unlike the curated databases behind most US
+    studies, the available feeds contain placeholder prices, incomplete corporate-action
+    adjustment and silent paging errors (Section~\ref{sec:data-quality}).
+  \item \textbf{Costs bite harder at small size.} A minimum order of 100 shares of a 100{,}000~VND
+    stock is 10 million VND, so a small account cannot size positions finely, and fees on both
+    sides plus the sales tax are paid on every round trip.
+  \item \textbf{Speculative operators.} Thinly traded stocks can be moved by coordinated trading
+    that paints chart patterns \citep{allen1992manipulation,aggarwal2006manipulation}. No public
+    record marks which episodes were manipulated, so the system flags the risk and restricts
+    itself to the liquid universe rather than claiming to detect it.
+\end{enumerate}
+
+Models and results published on US data cannot therefore be carried over as they are. The
+closest analogue is the Chinese A-share market, which also has daily price limits, a 100-share
+minimum, delayed selling and restricted short selling, but \gls{hose} has a tighter band, a
+longer settlement delay and a much smaller liquid cross-section.
+
 \section{The Wyckoff Method}
 % Origins \citep{wyckoff1931course}; modern adaptations \citep{pruden2007three,weis2013trades}.
 % Accumulation/distribution schematics, events, phases A--E, cause and effect (\gls{pnf}).

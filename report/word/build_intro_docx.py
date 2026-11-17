@@ -188,6 +188,7 @@ REFERENCES = [
     "Financial Studies, 33(5), 2223–2273.",
     "Harvey, C. R., Liu, Y. and Zhu, H. (2016). ... and the cross-section of expected returns. The Review of "
     "Financial Studies, 29(1), 5–68.",
+    "Kim, K. A. and Rhee, S. G. (1997). Price limit performance: evidence from the Tokyo Stock Exchange. The Journal of Finance, 52(2), 885–901.",
     "Krauss, C., Do, X. A. and Huck, N. (2017). Deep neural networks, gradient-boosted trees, random forests: "
     "statistical arbitrage on the S&P 500. European Journal of Operational Research, 259(2), 689–702.",
     "Lo, A. W. (2004). The adaptive markets hypothesis: market efficiency from an evolutionary perspective. "

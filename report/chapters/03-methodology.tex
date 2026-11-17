@@ -21,11 +21,21 @@ Two daily price layers were built for the \gls{hose} equity market.
     volume and value, and foreign buy/sell flow. Because each request is made by date rather
     than by ticker, stocks that were later delisted or moved to another exchange are included:
     the layer is free of survivorship bias. History starts in 2020; the cross-section is complete
-    from \textbf{26 February 2020} (one ticker before that date).
+    from \textbf{26 February 2020} (one ticker before that date). Access is not open: the user
+    must hold an SSI securities account and register for the FastConnect service (at a branch,
+    through a broker or by post), after which a key set is created on the broker's web platform.
+    Registration lasts one year and must be renewed, and request rates are limited per key.
   \item[Layer B] A one-pass refetch of adjusted daily bars from a third-party vendor (VCI),
-    2013--2026. It is longer, but it only holds tickers still listed when it was fetched and it
-    carries no raw prices, limit prices or foreign flow.
+    2013--2026, through the open-source \texttt{vnstock} library, which needs no account or
+    contract (anonymous use is limited to about 20 requests a minute). It is longer, but it only
+    holds tickers still listed when it was fetched and it carries no raw prices, limit prices or
+    foreign flow.
 \end{description}
+
+The difference in access matters for reproducibility. Anyone can rebuild layer B; rebuilding
+layer A requires an SSI account and service registration. Every script that produced the
+cleaned dataset is therefore kept in the thesis repository, and the dataset itself can be
+provided on request, so that results can be checked without an SSI account.
 
 The two layers are not spliced into one series. They use different adjustment conventions
 (Section~\ref{sec:data-adjustment}), so joining them would put a seam at the splice date.
@@ -65,6 +75,7 @@ the number of stocks covered each year.
     Delisted / moved stocks included      & 36                & 0                 \\
     Raw prices, reference/limit prices    & yes               & no                \\
     Foreign flow                          & yes               & no                \\
+    Access                                & SSI account + registration & open, no account \\
     Median bar completeness$^{a}$         & 1.000 (p5 0.995)  & 1.000 (p5 0.971)  \\
     \bottomrule
   \end{tabular}

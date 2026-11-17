@@ -4,8 +4,11 @@
 \section{Data}
 \label{sec:data}
 
-All numbers in this section are produced by \texttt{scripts/eda\_data\_layers.py}; the full
-tables are kept in \texttt{docs/eda/data-layers.md}. Prices are in absolute VND.
+Every number in this section is produced by code in the thesis repository:
+\texttt{scripts/build\_data.py} (collection), \texttt{src/wyckoff/data/clean.py} and
+\texttt{scripts/build\_clean.py} (cleaning and its validation),
+\texttt{scripts/eda\_data\_layers.py} and \texttt{scripts/eda\_universe.py} (exploratory analysis).
+Full tables are kept in \texttt{docs/eda/}. Prices are in absolute VND.
 
 \subsection{Sources}
 
@@ -13,19 +16,35 @@ Two daily price layers were built for the \gls{hose} equity market.
 
 \begin{description}
   \item[Layer A] The \gls{ssi} FastConnect Data \gls{api} (\texttt{DailyStockPrice}), pulled
-    market-wide in 30-day windows. It returns, for every listed instrument and session, raw
-    \gls{ohlcv}, the exchange's reference, ceiling and floor prices, an adjusted close, matched
-    and put-through volume, and foreign buy/sell flow. Because each window is queried by date
-    rather than by ticker, stocks that were later delisted or moved to another exchange are
-    included: the layer is free of survivorship bias. History starts in 2020; in practice the
-    cross-section is complete from \textbf{26 February 2020} (one ticker before that date).
-  \item[Layer B] A one-pass refetch of adjusted daily bars from a third-party vendor (VCI, via
-    the parent research project), 2013--2026. It is longer, but it only holds tickers that were
-    still listed when it was fetched and it carries no raw prices, limit prices or foreign flow.
+    market-wide. It returns, for every listed instrument and session, raw \gls{ohlcv}, the
+    exchange's reference, ceiling and floor prices, an adjusted close, matched and put-through
+    volume and value, and foreign buy/sell flow. Because each request is made by date rather
+    than by ticker, stocks that were later delisted or moved to another exchange are included:
+    the layer is free of survivorship bias. History starts in 2020; the cross-section is complete
+    from \textbf{26 February 2020} (one ticker before that date).
+  \item[Layer B] A one-pass refetch of adjusted daily bars from a third-party vendor (VCI),
+    2013--2026. It is longer, but it only holds tickers still listed when it was fetched and it
+    carries no raw prices, limit prices or foreign flow.
 \end{description}
 
 The two layers are not spliced into one series. They use different adjustment conventions
 (Section~\ref{sec:data-adjustment}), so joining them would put a seam at the splice date.
+
+\subsection{Collection}
+\label{sec:data-collection}
+
+The \gls{api} serves at most 30 calendar days per request, so the period is split into 83
+consecutive windows. Each window is requested as \emph{a single page} and accepted only if the
+number of unique (ticker, date) pairs equals the total the server reports; a window that fails
+is refetched whole, up to three times. All windows are fetched on the same day, so the adjusted
+prices the vendor returns share one adjustment basis; a build that mixes fetch days is refused
+unless a refetch of a sample window shows no difference.
+
+Both rules exist because of failures met on the way. With the default page size the server's
+pages overlap: on average 35\% of the rows of a window were repeats while other rows were
+never served, yet the row count matched the reported total. The first build looked complete
+and held 533 bars for HPG over 6.7 years instead of about 1{,}680. Counting rows is therefore
+not a completeness check; counting unique keys is.
 
 \subsection{Coverage}
 
@@ -62,97 +81,198 @@ the number of stocks covered each year.
 \end{figure}
 
 Of the 448 stocks in layer A, 140 are absent from layer B, 35 of them stocks that stopped
-trading on \gls{hose} before the end of the sample. A backtest on layer B alone would
-therefore only ever trade companies known, in hindsight, to have survived.
+trading on \gls{hose} before the end of the sample. A backtest on layer B alone would therefore
+only ever trade companies known, in hindsight, to have survived.
 
-\subsection{Data Quality Findings}
+\subsection{Cleaning}
 \label{sec:data-quality}
 
-Six defects were found and handled before any model work. Most of them, if left in, produce
-bars that look like sharp market moves that never happened.
+The raw feed reports success while containing rows that are wrong in ways that raise no error.
+Algorithm~\ref{alg:clean} lists the cleaning steps in the order they run, and
+Table~\ref{tab:data-rows} accounts for every row.
 
-\begin{enumerate}
-  \item \textbf{Paging duplicates.} With the \gls{api}'s default page size, pages of one query
-    overlap: on average 35\% of the rows of a 30-day window were repeats while other rows were
-    never served, yet the row count matched the reported total. A first build looked complete
-    and held, for example, 533 bars for HPG over 6.7 years instead of about 1{,}680. Each window
-    is now fetched as a single page and rejected unless its unique (ticker, date) count equals
-    the reported total.
-  \item \textbf{Placeholder bars on no-trade sessions.} 7.9\% of stock-sessions in layer A have
-    zero matched volume. Their \gls{ohlcv} fields are placeholders (29{,}200 of the 51{,}132 are
-    not even flat bars), so every such row would print a fake bar spanning the daily band. These
-    sessions are kept as non-trading flags and their prices are discarded. After removing them,
-    the count of opening gaps beyond $-11\%$ (impossible inside the $\pm7\%$ band without a
-    corporate action) on the raw series falls from 2{,}747 to 502.
-  \item \textbf{Missing reference prices.} 2{,}685 rows (2{,}576 of them traded) report a zero
-    reference price; ceiling and floor are then unknown for those sessions, which are flagged
-    rather than treated as limit-locks. A further 40{,}640 rows have a zero close and no trade
-    at all, and are dropped.
-  \item \textbf{Prices already scaled.} 641 bars (ELC until September 2022, MCP on two days) have
-    ``raw'' prices that are not multiples of any \gls{hose} tick: the fields were already scaled
-    by the vendor while the reference price was not. They are excluded.
-  \item \textbf{Inconsistent bars.} 737 bars, almost all in 2020--2021, have a high or low that
-    does not contain the open or close, or an open of zero. The close is confirmed by the next
-    session's reference price, so the range and the open are repaired around it.
-  \item \textbf{Incomplete adjustment.} See Section~\ref{sec:data-adjustment}.
-\end{enumerate}
+\begin{algorithm}[ht]
+  \caption{Cleaning of layer A}
+  \label{alg:clean}
+  \KwIn{layer A rows (ticker, date, raw \acrshort{ohlcv}, reference/ceiling/floor, matched value, vendor adjusted close)}
+  \KwOut{cleaned rows with flags, own adjustment factor and adjusted \acrshort{ohlcv}}
+  Keep stocks only; drop rows with a zero close (listed, never traded) and rows before 26 Feb 2020\;
+  Flag \emph{non-trading}: zero matched volume. Keep the row, discard its prices (placeholders)\;
+  Flag \emph{price suspect}: a raw price that is not a multiple of the 10~VND tick (already scaled by the vendor); treat as non-trading\;
+  Flag \emph{limits unknown}: reference price is zero; never count such a session as a limit-lock\;
+  Compute liquidity: 20-session median matched value, shifted one session; rank stocks each day\;
+  \ForEach{stock and session}{
+    reference $\leftarrow$ midpoint of ceiling and floor if it differs from the reported reference by $>1\%$, else the reported reference\;
+    $r \leftarrow$ reference / previous close (previous reference if the previous session did not trade)\;
+    \If{$r < 0.995$ \textbf{and} ($r < 0.89$ \textbf{or} stock ranked in top 150 \textbf{or} vendor factor also stepped)}{mark an ex-right with ratio $r$}
+  }
+  Adjustment factor of a bar $\leftarrow$ product of all ex-right ratios after it\;
+  Repair bars whose high/low do not contain open/close, keeping the close\;
+  Adjusted prices $\leftarrow$ raw $\times$ factor; adjusted volume $\leftarrow$ volume / factor\;
+\end{algorithm}
+
+\begin{table}[ht]
+  \centering
+  \caption{Row accounting of the cleaning step (stocks only).}
+  \label{tab:data-rows}
+  \begin{tabular}{lr}
+    \toprule
+    Step & Rows \\
+    \midrule
+    Stock rows in layer A                                       & 689{,}541 \\
+    Dropped: zero close (never traded) or before 26 Feb 2020    & 40{,}674 \\
+    Kept                                                        & 648{,}867 \\
+    \quad flagged non-trading (zero matched volume)             & 51{,}132 \\
+    \quad flagged price suspect (ELC to Sep 2022, MCP)          & 641 \\
+    \quad flagged limits unknown (zero reference price)         & 2{,}685 \\
+    \quad repaired bars (range not containing open/close)       & 737 \\
+    Usable priced bars                                          & 597{,}097 \\
+    \quad of which on top-150 sessions                          & 248{,}585 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Two of these defects matter far more than their size suggests. The non-trading rows (7.9\% of
+the kept rows) carry placeholder prices: 29{,}200 of them are not even flat bars, so each would
+print a fake bar spanning the daily band. And the vendor's adjustment is incomplete, which is
+the subject of the next section.
 
 \subsection{Corporate-Action Adjustment}
 \label{sec:data-adjustment}
 
 Stock dividends, bonus shares and rights issues lower the price on the ex-right date without
-any change in value. On an unadjusted series these drops look like a Selling Climax. Layer A
-was fetched in one day, so its adjusted close sits on a single adjustment basis.
+any change in value; on an unadjusted series these drops look like crashes. SSI's adjusted
+close is correct where it adjusts, stepping on the ex-date itself, but it covers only 195 of the
+350 large ex-right sessions and ignores cash dividends. Layer B adjusts cash dividends too,
+which is why the two layers agree within 0.5\% on only 50\% of 2020 sessions but 87\% of 2026
+sessions while the median ratio stays at 1.00 every year: each small dividend shifts every
+earlier price by a few percent.
 
-SSI's adjusted close is correct where it adjusts: of the large ex-right sessions (exchange
-reference set more than 11\% below the previous close), the adjustment factor steps on the
-ex-date itself. But it adjusts only 195 of 350 such sessions, and it ignores cash dividends.
-Layer B adjusts cash dividends too, which is why the two layers agree within 0.5\% on only
-50\% of 2020 sessions but 87\% of 2026 sessions, while the median ratio stays at 1.00 every
-year: each small dividend shifts every earlier price by a few percent. Neither layer is clean:
-from 2020 on, 231 large opening gaps remain in SSI's adjusted series and 307 in layer B.
-
-The thesis therefore computes its own back-adjustment from the exchange reference price, which
-on \gls{hose} equals the previous close on every session except an ex-right date. The ratio of
-the two on that date is the adjustment factor, taken from the exchange rather than from a
-vendor's corporate-action database. Two complications had to be handled:
-
-\begin{itemize}
-  \item On some ex-right dates the reference field keeps its old value while the ceiling and
-    floor have already moved, so the midpoint of the band is used as the reference whenever the
-    two differ by more than 1\%.
-  \item On thinly traded stocks the close goes stale and the ratio moves without any corporate
-    action. A drop is therefore accepted as an ex-right only if the stock ranked in the top 150
-    by trailing traded value that day (ranked on earlier sessions only), or the drop exceeds the
-    daily band, or the vendor's own factor stepped on the same date.
-\end{itemize}
+The thesis therefore rebuilds the adjustment from the exchange reference price, which on
+\gls{hose} equals the previous close on every session except an ex-right date
+(Algorithm~\ref{alg:clean}). Two complications had to be handled. On some ex-right dates the
+reference field keeps its old value while the ceiling and floor have moved, so the band
+midpoint is used instead. On thinly traded stocks the close goes stale and the ratio moves
+without any corporate action, so a small drop is accepted only on a liquid stock or when the
+vendor's own factor confirms it.
 
 This yields 1{,}985 ex-right events, of which the vendor's factor covers 1{,}325. Layer B is not
-an input to this procedure, so it can serve as an independent check: where it could be compared,
-its own factor stepped by the same ratio on the same date in 97--99\% of events, by rule.
-Table~\ref{tab:data-gaps} shows the result. On the top-150 sessions, the universe the strategies
-will trade, one impossible gap remains.
+an input to this procedure, so it serves as an independent check: where it could be compared,
+its factor stepped by the same ratio on the same date in 97--99\% of events, depending on the
+acceptance rule. Table~\ref{tab:data-gaps} shows the result.
 
 \begin{table}[ht]
   \centering
-  \caption{Opening gaps below $-11\%$, 26 February 2020 to 30 October 2026.}
+  \caption{Opening gaps below $-11\%$ (impossible inside the $\pm7\%$ band without a corporate
+    action), 26 February 2020 to 30 October 2026.}
   \label{tab:data-gaps}
   \begin{tabular}{lrr}
     \toprule
-    Series                  & All stocks & Top-150 sessions \\
+    Series                   & All stocks & Top-150 sessions \\
     \midrule
-    Layer A, raw            & 487        & 291              \\
-    Layer A, vendor adjusted & 216       & 115              \\
-    Layer B, adjusted       & 283        & 2                \\
-    Layer A, cleaned        & 44         & 1                \\
+    Layer A, raw             & 487        & 291              \\
+    Layer A, vendor adjusted & 216        & 115              \\
+    Layer B, adjusted        & 283        & 2                \\
+    Layer A, cleaned         & 44         & 1                \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-The series is reliable on liquid stocks and only partly so on thin ones: 12.8\% of sessions
-outside the top 150 have no matched trade, against 0.03\% inside it. The cleaned series keeps
-all 448 stocks, with 597{,}097 usable bars, of which 248{,}585 are on top-150 sessions. Results
-in this thesis are reported on the liquid universe.
+\subsection{Exploratory Analysis}
+\label{sec:data-eda}
+
+The analysis below asks one practical question: which stocks should the models learn from and
+be evaluated on? Liquidity ranks are the lagged ranks of Algorithm~\ref{alg:clean}, so a
+stock's membership on any day uses only earlier sessions.
+
+\paragraph{Trading is highly concentrated.} On the median day the 30 most traded stocks account
+for 64.8\% of matched value, the top 100 for 94.5\% and the top 150 for 98.5\%
+(Figure~\ref{fig:universe-concentration}). Beyond the top 200 lies 0.4\% of the market's value.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/universe_concentration.png}
+  \caption{Share of each day's matched value traded in the $N$ most traded stocks. The orange
+    line marks $N=150$.}
+  \label{fig:universe-concentration}
+\end{figure}
+
+\paragraph{Data quality falls with liquidity.} Table~\ref{tab:universe-buckets} splits all
+ranked stock-sessions into liquidity buckets. Inside the top 150 almost every session has a
+trade; beyond rank 300, a third of the sessions have none, and the median stock trades about
+8~million VND a day.
+
+\begin{table}[ht]
+  \centering
+  \caption{Stock-sessions by liquidity bucket (rank by lagged 20-session median matched value).}
+  \label{tab:universe-buckets}
+  \begin{tabular}{lrrrrr}
+    \toprule
+    Rank        & Stock-sessions & No trade & At ceiling & At floor & Median value \\
+                &                & (\%)     & (\%)       & (\%)     & (bn VND)     \\
+    \midrule
+    1--50       & 82{,}950  & 0.004 & 2.67 & 2.81 & 158.2  \\
+    51--150     & 165{,}900 & 0.04  & 3.24 & 2.85 & 20.1   \\
+    151--300    & 248{,}850 & 0.91  & 2.97 & 1.87 & 0.78   \\
+    beyond 300  & 146{,}692 & 33.1  & 2.83 & 1.94 & 0.008  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{The liquid universe changes, slowly.} 306 different stocks were in the top 150 at
+some point, and a member stays a median of 685 sessions; on a typical day one stock enters and
+one leaves. Seventeen of the 306 were later delisted (among them FLC, HAI, HVG and POM). A
+universe picked from today's most traded stocks and applied to the past would silently drop all
+seventeen.
+
+\paragraph{The price band truncates returns.} Daily returns of top-150 stocks have a standard
+deviation of 2.67\% and an excess kurtosis of 6.5: the distribution is peaked with fat tails,
+as usual for stocks. Unusually, almost no day lies beyond three standard deviations (0.006\%,
+against 0.27\% for a normal distribution): three standard deviations is about 8\%, and the
+$\pm7\%$ band does not allow it. Extreme moves are spread over consecutive limit-locked sessions
+instead (Figure~\ref{fig:universe-returns}), which is exactly what makes exits uncertain.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/universe_returns.png}
+  \caption{Daily returns of top-150 and other stocks (log density). Both stop at the $\pm7\%$ band.}
+  \label{fig:universe-returns}
+\end{figure}
+
+\paragraph{Stocks move together.} The 30 most traded stocks have a mean pairwise return
+correlation of 0.39, from 0.02 to 0.82 (Figure~\ref{fig:universe-corr}). Within the liquid
+universe the mean pairwise correlation peaks in the 2022 bear market (0.43) and is lowest in
+2026 (0.28). Positions in several of these stocks are therefore far less diversified than their
+number suggests, which the decision layer must account for when sizing.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.72\linewidth]{figures/universe_corr.png}
+  \caption{Correlation matrix of daily returns, 30 most traded stocks on 30 October 2026.}
+  \label{fig:universe-corr}
+\end{figure}
+
+\subsection{Choice of Universe}
+\label{sec:data-universe}
+
+The models learn from and are evaluated on the \textbf{top 150 stocks by lagged traded value,
+re-ranked every session}. Four findings support this choice and one rules out the alternatives:
+
+\begin{itemize}
+  \item it holds 98.5\% of the market's traded value, so little opportunity is lost;
+  \item its data are reliable: almost every session trades, and one impossible gap remains
+    after cleaning (Table~\ref{tab:data-gaps});
+  \item positions in it can actually be entered and exited at a realistic size;
+  \item ranking on earlier sessions only keeps the delisted stocks that were once liquid, so
+    the universe is free of survivorship and look-ahead bias;
+  \item training on every listed stock would teach the models from stale and placeholder prices
+    of stocks that could not be traded, while a fixed list of today's leaders would introduce
+    exactly the hindsight the ranking avoids.
+\end{itemize}
+
+A stock's full history is still used to compute its features, so a stock entering the universe
+has its indicators ready on the first day. Only the rows used for training, signals and
+evaluation are limited to universe members.
 
 \subsection{Choice of Sample Period}
 
@@ -175,9 +295,8 @@ Figure~\ref{fig:data-regimes} places both layers on the VNINDEX history.
     \midrule
     Layer A, 2020-02 on (\textbf{chosen})
       & Survivorship-free; raw prices and exchange limit prices for limit-lock and execution
-        modelling; foreign flow for volume confirmation; exchange reference prices allow an
-        exact own adjustment
-      & About 6.7 years; detector warm-up uses the first months; one full bear market (2022,
+        modelling; foreign flow; exchange reference prices allow an exact own adjustment
+      & About 6.7 years; model warm-up uses the first months; one full bear market (2022,
         $-40\%$) plus the COVID crash \\
     Layer B, 2013 on
       & Twice the history; adds the 2018 correction ($-27\%$)
@@ -191,10 +310,10 @@ Figure~\ref{fig:data-regimes} places both layers on the VNINDEX history.
   \end{tabular}
 \end{table}
 
-The main sample is layer A from 26 February 2020 to 30 October 2026. It still covers three
-distinct regimes: the COVID crash and recovery (2020--2021), the 2022 bear market and the
-2023--2026 range. Layer B before 2020 is used only as a secondary, out-of-period robustness
-check, reported with its survivorship bias stated next to every number.
+The main sample is layer A from 26 February 2020 to 30 October 2026. It covers three distinct
+regimes: the COVID crash and recovery (2020--2021), the 2022 bear market and the 2023--2026
+range. Layer B before 2020 is used only as a secondary, out-of-period robustness check, reported
+with its survivorship bias stated next to every number.
 
 \section{Wyckoff Event and Phase Definitions}
 % Operational definitions for every event; table: event -> price rule -> volume rule.

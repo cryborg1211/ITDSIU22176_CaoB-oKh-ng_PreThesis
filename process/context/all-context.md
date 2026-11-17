@@ -97,6 +97,7 @@ Never load the whole `process/context/` tree.
 |---|---|
 | `process/context/all-context.md` | any substantial planning, research, review, or implementation task |
 | `docs/00-scope-synthesis.md` | any scope, strategy, methodology, or evaluation question |
+| `docs/02-status-tracker.md` | current status, proposed algorithm/system design, what is written where, timeline |
 | `process/context/tests/all-tests.md` | testing, verification, debugging test failures |
 | `process/context/planning/all-planning.md` | plan-shape calibration, SIMPLE vs COMPLEX reference docs |
 

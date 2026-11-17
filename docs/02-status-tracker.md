@@ -65,6 +65,8 @@ Nguyên tắc: replay trong ứng dụng chỉ dùng model train **trước** ng
 | Layer A (SSI 2020+) + layer B (VCI 2013+) + chỉ số | ✅ | `scripts/build_data.py`, commit `073fe03` |
 | EDA so sánh 2 layer, chọn mốc 26-02-2020 | ✅ | `docs/eda/data-layers.md` |
 | Làm sạch + tự back-adjust từ giá tham chiếu | ✅ | `src/wyckoff/data/clean.py`, `docs/eda/clean-validation.md`, commit `dbb3fe6` |
+| EDA chọn universe (tập trung thanh khoản, chất lượng theo nhóm, phân phối lợi suất, ma trận tương quan) → **top 150 theo giá trị khớp trễ 1 phiên, xếp lại mỗi phiên** | ✅ | `scripts/eda_universe.py`, `docs/eda/universe.md`, report §3.1.6–3.1.7 |
+| MT5: 446 custom symbol `TICKER.VN` (nhóm HOSE), nến ngày đã điều chỉnh; file trần/sàn/giá thô cho EA | 🟡 | `scripts/export_mt5.py`, `mt5/Scripts/ImportHoseSymbols.mq5`. Cần chạy lại import 1 lần cho đủ 446 mã (lần 2 dừng ở 144) |
 | Backtest theo luật VN | ⬜ | |
 | Lớp tín hiệu | ⬜ | |
 | Lớp quyết định | ⬜ | |
@@ -79,7 +81,7 @@ Nguyên tắc: replay trong ứng dụng chỉ dùng model train **trước** ng
 | Abstract, Acknowledgements | ⬜ | viết cuối |
 | Ch1 Introduction | ✅ | 3 trang: bối cảnh, điểm yếu, hướng đi sơ bộ. Không có RQ/scope chi tiết, không nhắc Wyckoff |
 | Ch2 Related Work | ⬜ | chỉ có khung đề mục, còn khung theo hướng Wyckoff cũ → phải viết lại |
-| Ch3 Methodology | 🟡 | §3.1 Data xong; các mục khác còn khung theo hướng cũ |
+| Ch3 Methodology | 🟡 | §3.1 Data xong chi tiết (nguồn, thu thập, coverage, Algorithm 1 làm sạch, bảng đếm dòng, điều chỉnh, EDA, chọn universe, chọn giai đoạn); các mục khác còn khung theo hướng cũ |
 | Ch4–Ch7 | ⬜ | |
 | Tài liệu tham khảo | 🟡 | 17 mục, ghi từ trí nhớ, **chưa đối chiếu bản gốc** |
 
@@ -91,7 +93,8 @@ Sửa thì sửa LaTeX rồi chạy lại script; nếu lỡ sửa trên Google 
 | Bản | Nội dung | Sinh bằng | Ngày |
 |---|---|---|---|
 | `report/main.pdf` | toàn bộ report | `tectonic -X compile main.tex` | luôn mới nhất |
-| `report/word/pre_thesis_report.docx` + Google Doc *Pre Thesis Report - Cao Bao Khuong (v2, logo + supervisor)* | bìa + front matter + Ch1, tiếng Anh | `report/word/build_thesis_docx.py` | 17-11-2026 |
+| `report/word/pre_thesis_report_en.docx` / `pre_thesis_report_vi.docx` | bìa + front matter + Ch1 + Ch2 (đang làm) + Ch3 §3.1 Data, Anh và Việt | `report/word/build_thesis_docx.py` (text Ch3 ở `content_ch3.py`) | 17-11-2026 |
+| Google Doc *Pre Thesis Report - Cao Bao Khuong (v2, logo + supervisor)* | bản cũ, chỉ có Ch1 | | 17-11-2026 |
 | `report/word/introduction_en.docx` / `introduction_vi.docx` + 2 Google Doc *Chapter 1 (EN)*, *Chương 1 (VI)* | chỉ Ch1 | `report/word/build_intro_docx.py` | 17-11-2026 |
 
 Trên Drive: doc *Pre Thesis Report* (trống) và *Pre Thesis Report - Cao Bao Khuong (formatted)* (bản v1, chưa có

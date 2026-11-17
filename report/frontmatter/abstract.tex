@@ -1,8 +1,29 @@
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
-% TODO (write last, ~250 words): problem -> method (detector + VN-constrained backtest,
-% two engines) -> data (HOSE, period) -> key numbers (detection F1, OOS Sharpe/DSR, MaxDD)
-% -> honest conclusion.
 
-\noindent\textbf{Keywords:} Wyckoff method, market phase identification, pattern detection,
-Vietnamese stock market, backtesting, MetaTrader 5.
+Choosing when to buy and sell stocks is hard, and harder on the Ho Chi Minh City Stock Exchange
+(HOSE), where a $\pm7\%$ daily price band, delayed settlement, trading costs and speculative
+operators make many strategies that look profitable on paper impossible to trade. This thesis
+develops an AI-driven decision support system that turns machine-learning signals into explained
+recommendations with position sizes and risk warnings, and evaluates it under the exchange's own
+rules.
+
+This pre-thesis report presents the problem, the proposed system and its data foundation. A
+survivorship-free daily dataset of 448 HOSE stocks from February 2020 to October 2026 was
+collected from the SSI FastConnect API and cleaned. The work exposed defects that a vendor's
+success code hides: overlapping result pages, placeholder prices on 7.9\% of stock-sessions and a
+corporate-action adjustment that covers only part of the events. Rebuilding the adjustment from
+the exchange's reference prices left a single impossible price gap among liquid stocks, and was
+confirmed by an independent source in 97--99\% of events. Exploratory analysis shows that the
+150 most traded stocks carry 98.5\% of traded value and nearly all reliable data, that the daily
+price band truncates the tails of the return distribution, and that the most traded stocks are
+strongly correlated. The models will therefore be trained and evaluated on a liquid universe
+re-ranked every session.
+
+The next stages build the signal and decision layers, a backtest that enforces HOSE rules and
+corrects for multiple testing, an interactive application that replays historical market
+scenarios, and a MetaTrader~5 implementation as an independent check.
+
+\bigskip
+\noindent\textbf{Keywords:} decision support system, machine learning, stock trading,
+Vietnamese stock market, data quality, backtesting.

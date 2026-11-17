@@ -1,33 +1,77 @@
 \chapter{Introduction}
 \label{ch:introduction}
 
-\section{Motivation}
-% Wyckoff is widely taught and traded discretionarily in Vietnam, but almost never tested
-% systematically on \gls{hose} data with realistic costs and market rules.
+\section{Background}
+
+Deciding when to buy a stock and when to sell it is one of the most common financial decisions
+an individual makes, and one of the hardest to make well. The classical view holds that prices
+already reflect available information, so that no rule can beat the market after costs
+\citep{fama1970efficient}; the adaptive view holds that predictability can appear and fade as
+conditions change, so whether an edge exists is an empirical question for each market
+\citep{lo2004adaptive}. Machine learning now routinely finds weak but real structure in stock
+returns \citep{krauss2017deep,gu2020empirical}. Whether that structure can be turned into
+better decisions on the Vietnamese market, under its own rules, is far less studied.
 
 \section{Problem Statement}
-% Discretionary phase reading is subjective and not reproducible; past student work on VN
-% trading strategies ignores transaction costs, settlement and price limits.
 
-\section{Research Questions}
-\label{sec:rq}
-\begin{description}
-  \item[RQ1 (Detection)] How accurately can Wyckoff events and phases be detected
-    automatically on daily \gls{hose} data, compared with human annotation?
-  \item[RQ2 (Profitability)] Do entry/exit rules derived from detected phases beat
-    buy-and-hold VN-Index and a simple breakout baseline after costs and taxes?
-  \item[RQ3 (Robustness)] Do the results hold across market regimes and across two
-    independent backtest engines (Python and \gls{mt5})?
-\end{description}
+A trading aid for the \gls{hose} faces weaknesses on three sides. Each one, if ignored, makes a
+system look better on paper than it can be in practice.
 
-\section{Scope and Objectives}
-% Universe: liquid HOSE stocks (ADV filter). Long-only, daily bars. Out of scope: HNX/UPCoM
-% as main universe, intraday trading, short selling, live trading.
+\paragraph{The market.}
+\begin{itemize}
+  \item The $\pm7\%$ daily band can lock a falling stock at the floor, so exits are not
+    guaranteed; settlement forces a position to be held for several sessions.
+  \item Trading concentrates in a small group of stocks. Thin stocks have stale prices and are
+    exposed to speculative operators who move prices and paint misleading chart patterns
+    \citep{allen1992manipulation,aggarwal2006manipulation}.
+  \item Fees on both sides and a tax on every sale erase many small statistical edges.
+\end{itemize}
 
-\section{Contributions}
-% 1) VN-specific detector + annotation guideline and labeled sample
-% 2) cost- and rule-aware backtest with DSR/PBO
-% 3) MT5 indicator + EA as a cross-engine check and a visual tool
+\paragraph{The data.}
+\begin{itemize}
+  \item Sources built from current listings omit delisted companies (survivorship bias).
+  \item Corporate actions are adjusted inconsistently; taken as delivered, a commercial feed
+    contains hundreds of price drops that never happened (Section~\ref{sec:data}).
+  \item Defects are silent: duplicated rows reported as success, placeholder prices for
+    sessions with no trade, fields that disagree with each other.
+\end{itemize}
+
+\paragraph{Common approaches.}
+\begin{itemize}
+  \item Backtests ignore the band, settlement, lot size, fees and taxes, and report the best of
+    many configurations without correcting for the number tried
+    \citep{harvey2016cross,bailey2014dsr,bailey2017pbo}.
+  \item Features and labels leak information not yet known on the day of the decision, and a
+    single test period covers only one market regime.
+  \item Models output a probability, not a decision: they do not say whether to act, how much,
+    when to exit or why, which matters most for investors already prone to overtrading and to
+    holding losers \citep{barber2000trading,shefrin1985disposition}.
+\end{itemize}
+
+\section{Proposed Direction}
+
+This thesis develops an \gls{ai}-driven \gls{dss} for trading \gls{hose} stocks: a system that
+supports the investor's decision rather than replacing it \citep{power2002dss}. In outline:
+
+\begin{itemize}
+  \item a cleaned, survivorship-free daily dataset of \gls{hose} stocks, with its defects
+    measured and documented;
+  \item a signal layer built on machine-learning models and interpretable price--volume
+    features;
+  \item a decision layer that turns signals into recommendations with reasons, position sizes
+    and risk warnings;
+  \item an evaluation that enforces \gls{hose} rules and costs, uses walk-forward validation
+    and corrects for multiple testing;
+  \item an interactive application with historical scenario replays, and an \gls{mt5}
+    implementation as an independent check.
+\end{itemize}
+
+Research questions, scope and the detailed design are fixed in the following chapters as the
+work progresses.
 
 \section{Thesis Structure}
-% One sentence per chapter.
+
+Chapter~\ref{ch:related-work} reviews related work. Chapter~\ref{ch:methodology} describes the
+data and the system design. Chapter~\ref{ch:implementation} presents the implementation,
+Chapter~\ref{ch:results} the experiments and Chapter~\ref{ch:discussion} their interpretation.
+Chapter~\ref{ch:conclusion} concludes.

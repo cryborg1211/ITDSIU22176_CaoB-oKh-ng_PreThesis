@@ -1,6 +1,10 @@
 # 00 — Tổng hợp scope (draft 30-10-2026)
 
-Tên đề tài (tạm): **Wyckoff Pattern Detection for Market Phase Identification — a study on the Vietnamese equity market (HOSE)**
+Tên đề tài chính thức (04-11-2026, do GVHD chốt):
+- EN: **An AI-Driven Decision Support System for Intelligent Stock Trading**
+- VI: **Nghiên cứu và phát triển hệ thống hỗ trợ ra quyết định giao dịch chứng khoán thông minh dựa trên trí tuệ nhân tạo**
+
+⚠️ Toàn bộ scope bên dưới viết theo tên cũ (*Wyckoff Pattern Detection for Market Phase Identification*). GVHD cũng gửi repo gốc QTradeX. Vai trò của Wyckoff, MT5 và vectorbt trong đề tài mới **chưa chốt** — xem `docs/01-qtradex-assessment.md`.
 
 Mục tiêu cốt lõi: tìm **điểm vào / điểm ra** cổ phiếu HOSE dựa trên nhận diện pha Wyckoff, chứng minh bằng backtest có kiểm soát chi phí, out-of-sample, và đối chiếu trên MetaTrader 5.
 
@@ -167,3 +171,4 @@ Report: `report/` trong repo này, tiếng Anh, LaTeX. `iuthesis.sty` dựng l�
 3. Trường/GVHD có yêu cầu bắt buộc MT5 không, hay MT5 là lựa chọn của mình? (Ảnh hưởng mức đầu tư cho EA.)
 4. Có cần intraday không, hay chỉ ngày/tuần?
 5. Ai gán nhãn tay — một mình hay có người thứ hai (để đo inter-annotator agreement)?
+6. QTradeX là nền bắt buộc hay chỉ tham khảo? Wyckoff còn là lõi không? Xem `docs/01-qtradex-assessment.md`.

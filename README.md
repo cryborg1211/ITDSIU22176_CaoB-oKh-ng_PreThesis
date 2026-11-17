@@ -1,4 +1,9 @@
-# Wyckoff Pattern Detection for Market Phase Identification
+# An AI-Driven Decision Support System for Intelligent Stock Trading
+
+*Nghiên cứu và phát triển hệ thống hỗ trợ ra quyết định giao dịch chứng khoán thông minh dựa trên
+trí tuệ nhân tạo* (official title since 04-11-2026; earlier working title: Wyckoff Pattern Detection
+for Market Phase Identification). The text below describes the Wyckoff scope and is pending the
+scope decision in `docs/01-qtradex-assessment.md`.
 
 Pre-thesis → thesis workspace. Target market: Vietnam equities (HOSE).
 

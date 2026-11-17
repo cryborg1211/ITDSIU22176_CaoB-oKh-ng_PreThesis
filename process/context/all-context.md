@@ -15,8 +15,12 @@ Start here before loading deeper context files.
 
 ## Project Description
 
-Solo academic project: **pre-thesis → thesis**, topic *Wyckoff Pattern Detection for Market Phase
-Identification* on the Vietnamese equity market (HOSE).
+Solo academic project: **pre-thesis → thesis**. Official title since 04-11-2026: *An AI-Driven
+Decision Support System for Intelligent Stock Trading*. The supervisor also sent QTradeX as the
+"main repo". Decided 04-11-2026: QTradeX is reference only, the product has a UI plus scripted
+scenario demos, MT5 stays, and everything in the parent project may be reused (copy, never
+import). Wyckoff's role is **not decided yet** (`docs/01-qtradex-assessment.md`). The goal below is
+the earlier Wyckoff scope, on the Vietnamese equity market (HOSE).
 
 Goal: automatically detect Wyckoff accumulation / distribution events (SC, AR, ST, Spring, Test,
 SOS, LPS, BU / PSY, BC, UTAD, SOW, LPSY) and phases A–E on HOSE daily bars, turn them into

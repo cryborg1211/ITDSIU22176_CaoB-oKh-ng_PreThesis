@@ -68,8 +68,8 @@ therefore only ever trade companies known, in hindsight, to have survived.
 \subsection{Data Quality Findings}
 \label{sec:data-quality}
 
-Four defects were found and handled before any detector work. Each one, if left in, produces
-bars that look like Wyckoff climaxes.
+Six defects were found and handled before any model work. Most of them, if left in, produce
+bars that look like sharp market moves that never happened.
 
 \begin{enumerate}
   \item \textbf{Paging duplicates.} With the \gls{api}'s default page size, pages of one query
@@ -85,7 +85,15 @@ bars that look like Wyckoff climaxes.
     the count of opening gaps beyond $-11\%$ (impossible inside the $\pm7\%$ band without a
     corporate action) on the raw series falls from 2{,}747 to 502.
   \item \textbf{Missing reference prices.} 2{,}685 rows (2{,}576 of them traded) report a zero
-    reference price; ceiling and floor are then unknown for those sessions.
+    reference price; ceiling and floor are then unknown for those sessions, which are flagged
+    rather than treated as limit-locks. A further 40{,}640 rows have a zero close and no trade
+    at all, and are dropped.
+  \item \textbf{Prices already scaled.} 641 bars (ELC until September 2022, MCP on two days) have
+    ``raw'' prices that are not multiples of any \gls{hose} tick: the fields were already scaled
+    by the vendor while the reference price was not. They are excluded.
+  \item \textbf{Inconsistent bars.} 737 bars, almost all in 2020--2021, have a high or low that
+    does not contain the open or close, or an open of zero. The close is confirmed by the next
+    session's reference price, so the range and the open are repaired around it.
   \item \textbf{Incomplete adjustment.} See Section~\ref{sec:data-adjustment}.
 \end{enumerate}
 
@@ -105,10 +113,46 @@ year: each small dividend shifts every earlier price by a few percent. Neither l
 from 2020 on, 231 large opening gaps remain in SSI's adjusted series and 307 in layer B.
 
 The thesis therefore computes its own back-adjustment from the exchange reference price, which
-on \gls{hose} equals the previous close on every session except an ex-right date. The ratio
-of the two on that date is the exact adjustment factor, taken from the exchange rather than
-from a vendor's corporate-action database. In 95.3\% of sessions the ratio is exactly one; the
-remaining sessions are being checked one category at a time before the series is used.
+on \gls{hose} equals the previous close on every session except an ex-right date. The ratio of
+the two on that date is the adjustment factor, taken from the exchange rather than from a
+vendor's corporate-action database. Two complications had to be handled:
+
+\begin{itemize}
+  \item On some ex-right dates the reference field keeps its old value while the ceiling and
+    floor have already moved, so the midpoint of the band is used as the reference whenever the
+    two differ by more than 1\%.
+  \item On thinly traded stocks the close goes stale and the ratio moves without any corporate
+    action. A drop is therefore accepted as an ex-right only if the stock ranked in the top 150
+    by trailing traded value that day (ranked on earlier sessions only), or the drop exceeds the
+    daily band, or the vendor's own factor stepped on the same date.
+\end{itemize}
+
+This yields 1{,}985 ex-right events, of which the vendor's factor covers 1{,}325. Layer B is not
+an input to this procedure, so it can serve as an independent check: where it could be compared,
+its own factor stepped by the same ratio on the same date in 97--99\% of events, by rule.
+Table~\ref{tab:data-gaps} shows the result. On the top-150 sessions, the universe the strategies
+will trade, one impossible gap remains.
+
+\begin{table}[ht]
+  \centering
+  \caption{Opening gaps below $-11\%$, 26 February 2020 to 30 October 2026.}
+  \label{tab:data-gaps}
+  \begin{tabular}{lrr}
+    \toprule
+    Series                  & All stocks & Top-150 sessions \\
+    \midrule
+    Layer A, raw            & 487        & 291              \\
+    Layer A, vendor adjusted & 216       & 115              \\
+    Layer B, adjusted       & 283        & 2                \\
+    Layer A, cleaned        & 44         & 1                \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The series is reliable on liquid stocks and only partly so on thin ones: 12.8\% of sessions
+outside the top 150 have no matched trade, against 0.03\% inside it. The cleaned series keeps
+all 448 stocks, with 597{,}097 usable bars, of which 248{,}585 are on top-150 sessions. Results
+in this thesis are reported on the liquid universe.
 
 \subsection{Choice of Sample Period}
 

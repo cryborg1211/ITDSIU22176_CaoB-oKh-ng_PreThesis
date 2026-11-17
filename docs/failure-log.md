@@ -101,3 +101,21 @@ Entry format:
 - Resolution: decided to flag non-trading sessions and compute own back-adjustment from the
   exchange reference price (cleaning module, not yet built). Data choice written up in report §3.1
 - Thesis use: data-quality subsection — every listed defect would print a fake climax
+
+## 2026-11-04 — reference price was not the clean signal it looked like
+- Version: working tree after bc2afe3 (`src/wyckoff/data/clean.py`, uncommitted at time of writing)
+- Area: data
+- Tried: back-adjust from `ref_price / previous close`, on the claim that the ratio is 1 except on
+  ex-right dates
+- Failed: (1) the ratio moved on thin stocks with no corporate action: against layer B's factor it
+  matched 98–100% in the top 150 by traded value but only 35% below; (2) top-150 names still
+  showed 77 impossible gaps because `ref_price` sometimes stays at the old level on the ex-date
+  while ceiling and floor have moved (SSI 2026-08-17: ref 24,500, floor 18,250); (3) ELC to
+  2022-09 and MCP have non-tick "raw" OHLC, already scaled by the vendor; (4) 737 bars had a
+  range that did not contain their open or close
+- Root cause: the close field goes stale on thin stocks, and the vendor's fields are not updated
+  consistently with each other
+- Resolution: band midpoint as reference when it differs from ref by >1%; accept a drop only if
+  liquid, beyond the band, or SSI's factor also stepped; flag or repair the rest. Opening gaps below
+  −11% on top-150 sessions: raw 291, SSI adjusted 115, layer B 2, cleaned 1. All stocks: cleaned 44
+- Thesis use: data-quality subsection; why results are reported on the liquid universe

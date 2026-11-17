@@ -46,10 +46,13 @@ Which start date the thesis uses is decided by the EDA in `docs/eda/data-layers.
 Main sample = layer A from 2020-02-26. Layer B pre-2020 = robustness check only, never spliced.
 Write-up: `report/chapters/03-methodology.tex` §Data.
 
-## Next
+## Cleaned series
 
-Cleaning module: non-trading flag, `ref_price = 0` repair, own ref-price back-adjustment
-(investigate the ~4.7% of sessions where ref/previous close is neither 1 nor an ex-right).
+**All downstream code reads `data/hose_daily_clean.parquet`** (`src/wyckoff/data/clean.py`, built by
+`scripts/build_clean.py`, measured in `docs/eda/clean-validation.md`). Use `open/high/low/close_adj`
+and `volume_adj`; check `is_traded`, `is_liquid`, `limit_known`. Raw prices are kept for execution.
+Report results on `is_liquid` (top 150 by lagged traded value): the data is only partly reliable
+below it.
 
 ## Related Context
 
